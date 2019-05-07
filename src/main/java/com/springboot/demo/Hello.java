@@ -10,9 +10,9 @@ public class Hello {
     public String hello(){
         //测试
         if (true){
-            return "Hello Sprint Boot";
+            return "IF True-------branch";
         }else {
-            return "Hello Sprint Boot";
+            return "";
         }
 
     }
