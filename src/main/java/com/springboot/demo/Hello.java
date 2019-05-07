@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class Hello {
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public String hello(){
-        return "Hello Sprint Boot";
+        //测试
+        if (true){
+            return "Hello Sprint Boot";
+        }else {
+            return "Hello Sprint Boot";
+        }
+
     }
 }

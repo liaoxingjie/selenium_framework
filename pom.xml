@@ -14,6 +14,7 @@
     <name>demo</name>
     <description>Demo project for Spring Boot</description>
 
+
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -23,18 +24,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>1.3.2</version>
         </dependency>
 
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>mysql</groupId>
@@ -45,6 +47,23 @@
             <artifactId>c3p0</artifactId>
             <version>0.9.5.2</version>
         </dependency>
+        <!-- jacoco -->
+        <!--<dependency>-->
+            <!--<groupId>junit</groupId>-->
+            <!--<artifactId>junit</artifactId>-->
+            <!--<version>4.10</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.jacoco</groupId>-->
+            <!--<artifactId>org.jacoco.core</artifactId>-->
+            <!--<version>0.8.3</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.jacoco</groupId>-->
+            <!--<artifactId>org.jacoco.report</artifactId>-->
+            <!--<version>0.8.3</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -53,6 +72,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
         </plugins>
     </build>
 
