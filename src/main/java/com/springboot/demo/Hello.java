@@ -12,7 +12,7 @@ public class Hello {
         if (true){
             return "IF True-------branch";
         }else {
-            return "";
+            return "ELSE----------branch";
         }
 
     }
