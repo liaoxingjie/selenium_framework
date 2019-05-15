@@ -78,9 +78,7 @@ public class JacocoDumpAndReport {
     public String executeDumpAndReport() throws Exception{
         executeDump();
         executeReport();
-//        JacocoDumpAndReport j = new JacocoDumpAndReport();
-//        j.executeDump();
-//        j.executeDumpAndReport();
         return "Dump And Report Done !!!!!!";
     }
+
 }
