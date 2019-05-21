@@ -1,17 +1,14 @@
 package com.springboot.demo.web;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
-import org.jacoco.core.data.ExecutionDataStore;
-import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.core.tools.ExecDumpClient;
 import org.jacoco.core.tools.ExecFileLoader;
-import org.jacoco.report.DirectorySourceFileLocator;
-import org.jacoco.report.FileMultiReportOutput;
-import org.jacoco.report.IReportVisitor;
+import org.jacoco.report.*;
 import org.jacoco.report.html.HTMLFormatter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,7 +28,6 @@ public class JacocoDumpAndReport {
     private File classesDirectory = new File("C:/Users/Administrator/IdeaProjects/demo/target/classes/com/springboot/demo");
     private File reportDirectory = new File("C:/Users/Administrator/Desktop/jacoco");
     private String title = "demo";
-    private ExecFileLoader execFileLoader = new ExecFileLoader();
 
     @RequestMapping(value={"/dump"}, method = RequestMethod.GET )
     public String executeDump() {
@@ -54,13 +50,15 @@ public class JacocoDumpAndReport {
         return "report done!!!";
     }
 
-    public void loadexec() throws IOException {
-        this.execFileLoader.load(this.destFile);
+    public ExecFileLoader loadexec() throws IOException {
+        ExecFileLoader execFileLoader = new ExecFileLoader();
+        execFileLoader.load(this.destFile);
+        return execFileLoader;
     }
 
     private IBundleCoverage analyzeStructure() throws IOException {
         CoverageBuilder coverageBuilder = new CoverageBuilder();
-        Analyzer analyzer = new Analyzer(this.execFileLoader.getExecutionDataStore(), coverageBuilder);
+        Analyzer analyzer = new Analyzer(loadexec().getExecutionDataStore(), coverageBuilder);
         analyzer.analyzeAll(this.classesDirectory);
         return coverageBuilder.getBundle(this.title);
     }
@@ -68,17 +66,85 @@ public class JacocoDumpAndReport {
     public void createReport(IBundleCoverage bundleCoverage) throws IOException {
         HTMLFormatter htmlFormatter = new HTMLFormatter();
         IReportVisitor visitor = htmlFormatter.createVisitor(new FileMultiReportOutput(this.reportDirectory));
-        visitor.visitInfo(this.execFileLoader.getSessionInfoStore().getInfos(), this.execFileLoader
-                .getExecutionDataStore().getContents());
+        visitor.visitInfo(loadexec().getSessionInfoStore().getInfos(), loadexec().getExecutionDataStore().getContents());
         visitor.visitBundle(bundleCoverage, new DirectorySourceFileLocator(this.sourceDirectory, "utf-8", 4));
         visitor.visitEnd();
     }
+
+    @RequestMapping(value={"/r2"}, method=RequestMethod.GET)
+    private void report2() throws IOException {
+        loadexec();
+        CoverageBuilder coverageBuilder = new CoverageBuilder();
+        Analyzer analyzer;
+        if (this.classesDirectory.isDirectory()) {
+            analyzer = new Analyzer(loadexec().getExecutionDataStore(), coverageBuilder);
+            analyzer.analyzeAll(this.classesDirectory);
+        }
+        IBundleCoverage bundle = coverageBuilder.getBundle(this.title);
+        HTMLFormatter htmlFormatter = new HTMLFormatter();
+        IReportVisitor visitor = htmlFormatter.createVisitor(new FileMultiReportOutput(this.reportDirectory));
+        visitor.visitInfo(loadexec().getSessionInfoStore().getInfos(), loadexec().getExecutionDataStore().getContents());
+        SourceFileCollection locator = new SourceFileCollection(this.sourceDirectory);
+        Reader reader = locator.getSourceFile("","");
+        visitor.visitBundle(bundle, locator);
+        visitor.visitEnd();
+    }
+
 
     @RequestMapping(value={"/dr"}, method=RequestMethod.GET)
     public String executeDumpAndReport() throws Exception{
         executeDump();
         executeReport();
         return "Dump And Report Done !!!!!!";
+    }
+
+
+    //增加内部类用于处理报告生成期间找不到源码文件的问题--依然没有解决
+    private class SourceFileCollection implements ISourceFileLocator {
+        private final List<File> sourceRoots;
+        private final String encoding;
+        private final File sourceDirctory;
+        public SourceFileCollection(File sourceDirectory) {
+            this.sourceDirctory = new File("C:/Users/Administrator/IdeaProjects/demo/src/main/java/com/springboot/demo");
+            this.sourceRoots = JacocoDumpAndReport.getCompileSourceRoots(this.sourceDirctory);
+            this.encoding = "utf-8";
+        }
+        public Reader getSourceFile(String packageName, String fileName) throws IOException {
+            String r;
+            if (packageName.length() > 0) {
+                r = packageName + '/' + fileName;
+            } else {
+                r = fileName;
+            }
+            for (File sourceRoot : this.sourceRoots)
+            {
+                File file = new File(sourceRoot, r);
+                if ((file.exists()) && (file.isFile())) {
+                    return new InputStreamReader(new FileInputStream(file), this.encoding);
+                }
+            }
+            return null;
+        }
+
+        public int getTabWidth() {
+            return 4;
+        }
+    }
+    private static List<File> getCompileSourceRoots(File sourceDirectory) {
+        List<File> result = new ArrayList();
+
+        for (Object path :sourceDirectory.list()) {
+            result.add(resolvePath(sourceDirectory, (String)path));
+        }
+        return result;
+    }
+
+    private static File resolvePath(File sourceDirectory, String name) {
+        File file = new File(name);
+        if (!file.isAbsolute()) {
+            file = new File(sourceDirectory.getAbsolutePath(), name);
+        }
+        return file;
     }
 
 }
