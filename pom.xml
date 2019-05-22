@@ -85,45 +85,58 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
-            <!--jacoco插件-->
+            <!--新增》》尝试解决jacoco找不到源码的问题（不高亮）-->
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <address>10.250.90.99</address>
-                    <destFile>${project.build.directory}/jacoco.exec</destFile>
-                    <port>8910</port>
-                    <reset>false</reset>
-                    <append>true</append>
-                    <sourceEncoding>utf-8</sourceEncoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <debug>true</debug>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>default-dump</id>
-                        <goals>
-                            <goal>dump</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report</id>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.16</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
             </plugin>
+
+            <!--jacoco插件-->
+            <!--<plugin>-->
+                <!--<groupId>org.jacoco</groupId>-->
+                <!--<artifactId>jacoco-maven-plugin</artifactId>-->
+                <!--<version>0.8.3</version>-->
+                <!--<configuration>-->
+                    <!--<address>10.250.90.99</address>-->
+                    <!--<destFile>${project.build.directory}/jacoco.exec</destFile>-->
+                    <!--<port>8910</port>-->
+                    <!--<reset>false</reset>-->
+                    <!--<append>true</append>-->
+                    <!--<sourceEncoding>utf-8</sourceEncoding>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>default-dump</id>-->
+                        <!--<goals>-->
+                            <!--<goal>dump</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>default-report</id>-->
+                        <!--<goals>-->
+                            <!--<goal>report</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<dataFile>${project.build.directory}/jacoco.exec</dataFile>-->
+                            <!--<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
