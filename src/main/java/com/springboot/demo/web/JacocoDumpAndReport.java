@@ -71,26 +71,6 @@ public class JacocoDumpAndReport {
         visitor.visitEnd();
     }
 
-    @RequestMapping(value={"/r2"}, method=RequestMethod.GET)
-    private void report2() throws IOException {
-        loadexec();
-        CoverageBuilder coverageBuilder = new CoverageBuilder();
-        Analyzer analyzer;
-        if (this.classesDirectory.isDirectory()) {
-            analyzer = new Analyzer(loadexec().getExecutionDataStore(), coverageBuilder);
-            analyzer.analyzeAll(this.classesDirectory);
-        }
-        IBundleCoverage bundle = coverageBuilder.getBundle(this.title);
-        HTMLFormatter htmlFormatter = new HTMLFormatter();
-        IReportVisitor visitor = htmlFormatter.createVisitor(new FileMultiReportOutput(this.reportDirectory));
-        visitor.visitInfo(loadexec().getSessionInfoStore().getInfos(), loadexec().getExecutionDataStore().getContents());
-        SourceFileCollection locator = new SourceFileCollection(this.sourceDirectory);
-        Reader reader = locator.getSourceFile("","");
-        visitor.visitBundle(bundle, locator);
-        visitor.visitEnd();
-    }
-
-
     @RequestMapping(value={"/dr"}, method=RequestMethod.GET)
     public String executeDumpAndReport() throws Exception{
         executeDump();
@@ -98,53 +78,11 @@ public class JacocoDumpAndReport {
         return "Dump And Report Done !!!!!!";
     }
 
-
-    //增加内部类用于处理报告生成期间找不到源码文件的问题--依然没有解决
-    private class SourceFileCollection implements ISourceFileLocator {
-        private final List<File> sourceRoots;
-        private final String encoding;
-        private final File sourceDirctory;
-        public SourceFileCollection(File sourceDirectory) {
-            this.sourceDirctory = new File("C:/Users/Administrator/IdeaProjects/demo/src/main/java/com/springboot/demo");
-            this.sourceRoots = JacocoDumpAndReport.getCompileSourceRoots(this.sourceDirctory);
-            this.encoding = "utf-8";
-        }
-        public Reader getSourceFile(String packageName, String fileName) throws IOException {
-            String r;
-            if (packageName.length() > 0) {
-                r = packageName + '/' + fileName;
-            } else {
-                r = fileName;
-            }
-            for (File sourceRoot : this.sourceRoots)
-            {
-                File file = new File(sourceRoot, r);
-                if ((file.exists()) && (file.isFile())) {
-                    return new InputStreamReader(new FileInputStream(file), this.encoding);
-                }
-            }
-            return null;
-        }
-
-        public int getTabWidth() {
-            return 4;
-        }
-    }
-    private static List<File> getCompileSourceRoots(File sourceDirectory) {
-        List<File> result = new ArrayList();
-
-        for (Object path :sourceDirectory.list()) {
-            result.add(resolvePath(sourceDirectory, (String)path));
-        }
-        return result;
+    @RequestMapping(value={"/report2"}, method=RequestMethod.GET)
+    private void report2() throws IOException {
+        ReportGenerator reportGenerator =  new ReportGenerator();
+        reportGenerator.create();
     }
 
-    private static File resolvePath(File sourceDirectory, String name) {
-        File file = new File(name);
-        if (!file.isAbsolute()) {
-            file = new File(sourceDirectory.getAbsolutePath(), name);
-        }
-        return file;
-    }
 
 }
