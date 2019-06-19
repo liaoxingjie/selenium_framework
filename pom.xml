@@ -134,7 +134,6 @@
                             <!--<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>-->
                         <!--</configuration>-->
                     <!--</execution>-->
-
                 <!--</executions>-->
             <!--</plugin>-->
             <plugin>
