@@ -1,4 +1,4 @@
-package com.springboot.demo.web;
+package com.springboot.demo.controller;
 
 import com.springboot.demo.entity.Area;
 import com.springboot.demo.service.AreaService;
