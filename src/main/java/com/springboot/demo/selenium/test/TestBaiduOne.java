@@ -17,19 +17,12 @@ public class TestBaiduOne {
 
     @RequestMapping(value = "/testcase1",method = RequestMethod.GET)
     public void testcase1(){
-        Toools.setProperty();
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("https://www.baidu.com");
-        BaiduPage baiduPage = PageFactory.initElements(driver,BaiduPage.class);
-
-        logger.info("------baidu_search-----");
-
+        logger.info("------testcase1 begin-----");
+        BaiduPage baiduPage = PageFactory.initElements(Toools.driverMap.get("1"),BaiduPage.class);
         baiduPage.sendkeys(baiduPage.kw,"1234567");
         baiduPage.click(baiduPage.su);
-        logger.info("111111111111111");
-        Toools.sleep(10);
-        driver.quit();
+        logger.info("------testcase1 end-----");
+
     }
 
 

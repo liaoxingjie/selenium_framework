@@ -1,5 +1,7 @@
 package com.springboot.demo.selenium.web;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +24,16 @@ public class Toools {
 
     @Autowired
     WebApplicationContext applicationContext;
+
+    public static HashMap<String,WebDriver> driverMap = new HashMap<>();
+
+    public static void initChromeDriver(String url){
+        Toools.setProperty();
+        WebDriver driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get(url);
+        driverMap.put("1",driver);
+    }
 
     public static void setProperty(){
         System.setProperty("webdriver.chrome.driver","C:\\Users\\Administrator\\IdeaProjects\\demo\\src\\main\\java\\com\\springboot\\demo\\selenium\\driver\\chromedriver75.exe");
